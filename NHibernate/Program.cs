@@ -65,6 +65,7 @@ namespace NHibernate
                 }
             }
             Console.WriteLine("Loading all rows from data.tsv file: finished {0}", DateTime.Now);
+            goto readline;
             #endregion
 
             #region Updating all rows
@@ -77,7 +78,7 @@ namespace NHibernate
                     using (var session = LoadTestContext.GetSessionFactory().OpenSession())
                     {
                         person.ColumnForUpdateTest = new string('0', 50);
-                        
+
                         foreach (var title in person.KnownForTitles)
                         {
                             title.ColumnForUpdateTest = new string('1', 50);
@@ -115,6 +116,7 @@ namespace NHibernate
             Console.WriteLine("Deleting all rows from the People table: finished {0}", DateTime.Now);
             #endregion
 
+            readline:
             Console.ReadLine();
         }
     }

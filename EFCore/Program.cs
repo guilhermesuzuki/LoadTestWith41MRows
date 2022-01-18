@@ -83,14 +83,14 @@ Console.WriteLine("Updating all rows from the People, Professions and Titles tab
             {
                 person.ColumnForUpdateTest = new string('0', 50);
                 db.Attach(person);
-                db.Entry(person).State = EntityState.Modified;
+                db.Entry(person).Property(x => x.ColumnForUpdateTest).IsModified = true;
                 db.SaveChanges();
 
                 foreach (var title in person.KnownForTitles)
                 {
                     title.ColumnForUpdateTest = new string('1', 50);
                     db.Attach(title);
-                    db.Entry(title).State = EntityState.Modified;
+                    db.Entry(title).Property(x => x.ColumnForUpdateTest).IsModified = true;
                     db.SaveChanges();
                 }
 
@@ -98,7 +98,7 @@ Console.WriteLine("Updating all rows from the People, Professions and Titles tab
                 {
                     profession.ColumnForUpdateTest = new string('2', 50);
                     db.Attach(profession);
-                    db.Entry(profession).State = EntityState.Modified;
+                    db.Entry(profession).Property(x => x.ColumnForUpdateTest).IsModified = true;
                     db.SaveChanges();
                 }
             }
