@@ -16,20 +16,15 @@ namespace NHibernate.Models
         {
             if (_sessionFactory != null) return _sessionFactory;
 
-            lock (_sessionFactory)
+            if (_sessionFactory == null)
             {
-                if (_sessionFactory == null)
-                {
-                    _sessionFactory = Fluently.Configure()
-                        .Database(
-                            MsSqlConfiguration.MsSql2012.ConnectionString(@"Server=localhost;Database=LoadTest_NHibernate;User Id=loadtest;Password=loadtest;")
-                        .ShowSql())
-                        .Mappings(c => c.FluentMappings
-                            .Add<Mappings.PersonMap>()
-                            .Add<Mappings.ProfessionMap>()
-                            .Add<Mappings.TitleMap>())
-                        .BuildSessionFactory();
-                }
+                _sessionFactory = Fluently.Configure()
+                    .Database(MsSqlConfiguration.MsSql2012.ConnectionString(@"Server=localhost;Database=LoadTest_NHibernate;User Id=loadtest;Password=loadtest;"))
+                    .Mappings(c => c.FluentMappings
+                        .Add<Mappings.PersonMap>()
+                        .Add<Mappings.ProfessionMap>()
+                        .Add<Mappings.TitleMap>())
+                    .BuildSessionFactory();
             }
 
             return _sessionFactory;

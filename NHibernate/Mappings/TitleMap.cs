@@ -12,6 +12,9 @@ namespace NHibernate.Mappings
     {
         public TitleMap()
         {
+            DynamicInsert();
+            DynamicUpdate();
+
             Id(x => x.Id).Unique().GeneratedBy.Identity();
             Map(x => x.NConst).Length(25);
             Map(x => x.Description).Length(50);

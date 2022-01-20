@@ -12,13 +12,16 @@ namespace NHibernate.Mappings
     {
         public PersonMap(): base()
         {
+            DynamicInsert();
+            DynamicUpdate();
+
             Id(x => x.NConst);
             Map(x => x.PrimaryName).Length(250);
             Map(x => x.BirthYear).Nullable();
             Map(x => x.DeathYear).Nullable();
             Map(x => x.ColumnForUpdateTest).Nullable();
-            HasMany(x => x.PrimaryProfession).Not.LazyLoad().KeyColumn("NConst");
-            HasMany(x => x.KnownForTitles).Not.LazyLoad().KeyColumn("NConst");
+            HasMany(x => x.PrimaryProfession).Cascade.All().Not.LazyLoad().KeyColumn("NConst");
+            HasMany(x => x.KnownForTitles).Cascade.All().Not.LazyLoad().KeyColumn("NConst");
             Table("People");
         }
     }

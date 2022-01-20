@@ -24,42 +24,46 @@ namespace NHibernate
                     var line = stream.ReadLine();
                     if (string.IsNullOrWhiteSpace(line) == false)
                     {
+                        var fields = line.Split('\t');
+                        var person = new Person()
+                        {
+                            NConst = fields[0],
+                            PrimaryName = fields[1],
+                            BirthYear = fields[2] == String.Empty || fields[2] == @"\N" ? (short?)null : short.Parse(fields[2]),
+                            DeathYear = fields[3] == String.Empty || fields[3] == @"\N" ? (short?)null : short.Parse(fields[3]),
+                        };
+
+                        if (string.IsNullOrWhiteSpace(fields[4]) == false && fields[4] != @"\N")
+                        {
+                            var professions = fields[4].Split(',');
+                            foreach (var profession in professions)
+                            {
+                                person.PrimaryProfession.Add(new Profession()
+                                {
+                                    NConst = person.NConst,
+                                    Description = profession,
+                                });
+                            }
+                        }
+
+                        if (string.IsNullOrWhiteSpace(fields[5]) == false && fields[5] != @"\N")
+                        {
+                            var titles = fields[5].Split(',');
+                            foreach (var title in titles)
+                            {
+                                person.KnownForTitles.Add(new Title()
+                                {
+                                    NConst = person.NConst,
+                                    Description = title,
+                                });
+                            }
+                        }
+
                         using (var session = LoadTestContext.GetSessionFactory().OpenSession())
                         {
-                            var fields = line.Split('\t');
-                            var person = new Person()
-                            {
-                                NConst = fields[0],
-                                PrimaryName = fields[1],
-                                BirthYear = fields[2] == String.Empty || fields[2] == @"\N" ? (short?)null : short.Parse(fields[2]),
-                                DeathYear = fields[3] == String.Empty || fields[3] == @"\N" ? (short?)null : short.Parse(fields[3]),
-                            };
-
-                            if (string.IsNullOrWhiteSpace(fields[4]) == false && fields[4] != @"\N")
-                            {
-                                var professions = fields[4].Split(',');
-                                foreach (var profession in professions)
-                                {
-                                    person.PrimaryProfession.Add(new Profession()
-                                    {
-                                        Description = profession,
-                                    });
-                                }
-                            }
-
-                            if (string.IsNullOrWhiteSpace(fields[5]) == false && fields[5] != @"\N")
-                            {
-                                var titles = fields[5].Split(',');
-                                foreach (var title in titles)
-                                {
-                                    person.KnownForTitles.Add(new Title()
-                                    {
-                                        Description = title,
-                                    });
-                                }
-                            }
-
-                            session.SaveOrUpdate(person);
+                            session.Save(person);
+                            session.Flush();
+                            session.Close();
                         }
                     }
                 }
@@ -114,9 +118,9 @@ namespace NHibernate
 
             }
             Console.WriteLine("Deleting all rows from the People table: finished {0}", DateTime.Now);
-            #endregion
+        #endregion
 
-            readline:
+        readline:
             Console.ReadLine();
         }
     }
