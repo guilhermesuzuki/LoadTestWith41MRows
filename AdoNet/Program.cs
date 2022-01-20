@@ -33,6 +33,7 @@ using (var stream = new StreamReader(filepath))
                     {
                         person.PrimaryProfession.Add(new Profession()
                         {
+                            NConst = person.NConst,
                             Description = profession,
                         });
                     }
@@ -45,6 +46,7 @@ using (var stream = new StreamReader(filepath))
                     {
                         person.KnownForTitles.Add(new Title()
                         {
+                            NConst = person.NConst,
                             Description = title,
                         });
                     }
