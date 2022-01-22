@@ -22,8 +22,8 @@ namespace AdoNet.Models
                     cmd.CommandText = "INSERT INTO [dbo].People (NConst,PrimaryName,BirthYear,DeathYear) VALUES (@NConst,@PrimaryName,@BirthYear,@DeathYear);";
                     cmd.Parameters.Add(new SqlParameter { ParameterName = "@NConst", Value = p.NConst });
                     cmd.Parameters.Add(new SqlParameter { ParameterName = "@PrimaryName", Value = p.PrimaryName });
-                    cmd.Parameters.Add(new SqlParameter { ParameterName = "@BirthYear", Value = p.BirthYear });
-                    cmd.Parameters.Add(new SqlParameter { ParameterName = "@DeathYear", Value = p.DeathYear });
+                    cmd.Parameters.Add(new SqlParameter { ParameterName = "@BirthYear", Value = p.BirthYear ?? (object)DBNull.Value });
+                    cmd.Parameters.Add(new SqlParameter { ParameterName = "@DeathYear", Value = p.DeathYear ?? (object)DBNull.Value });
                     cmd.ExecuteNonQuery();
                 }
 
@@ -41,7 +41,7 @@ namespace AdoNet.Models
                     cmd.CommandText = "INSERT INTO [dbo].Professions (NConst,Description) VALUES (@NConst,@Description); SELECT IDENT_CURRENT('Professions');";
                     cmd.Parameters.Add(new SqlParameter { ParameterName = "@NConst", Value = p.NConst });
                     cmd.Parameters.Add(new SqlParameter { ParameterName = "@Description", Value = p.Description });
-                    p.Id = (int)cmd.ExecuteScalar();
+                    p.Id = Convert.ToInt32(cmd.ExecuteScalar());
                     return p.Id;
                 }
             }
@@ -58,7 +58,7 @@ namespace AdoNet.Models
                     cmd.CommandText = "INSERT INTO [dbo].Titles (NConst,Description) VALUES (@NConst,@Description); SELECT IDENT_CURRENT('Titles');";
                     cmd.Parameters.Add(new SqlParameter { ParameterName = "@NConst", Value = t.NConst });
                     cmd.Parameters.Add(new SqlParameter { ParameterName = "@Description", Value = t.Description });
-                    t.Id = (int)cmd.ExecuteScalar();
+                    t.Id = Convert.ToInt32(cmd.ExecuteScalar());
                     return t.Id;
                 }
             }
@@ -181,15 +181,22 @@ namespace AdoNet.Models
                             {
                                 NConst = reader["NConst"] != null ? reader["NConst"].ToString() : String.Empty,
                                 PrimaryName = reader["PrimaryName"] != null ? reader["PrimaryName"].ToString() : String.Empty,
-                                BirthYear = reader["BirthYear"] != null ? (short?)int.Parse(reader["BirthYear"].ToString()) : 0,
-                                DeathYear = reader["DeathYear"] != null ? (short?)int.Parse(reader["DeathYear"].ToString()) : 0,
+                                BirthYear = reader["BirthYear"] != null && reader["BirthYear"] != DBNull.Value ? (short?)int.Parse(reader["BirthYear"].ToString()) : 0,
+                                DeathYear = reader["DeathYear"] != null && reader["DeathYear"] != DBNull.Value ? (short?)int.Parse(reader["DeathYear"].ToString()) : 0,
                             };
-
-                            person.PrimaryProfession = SelectProfessions(conn, person.NConst);
-                            person.KnownForTitles = SelectTitles(conn, person.NConst);
 
                             people.Add(person);
                         }
+                    }
+
+                    foreach (var person in people)
+                    {
+                        person.PrimaryProfession = SelectProfessions(conn, person.NConst);
+                    }
+
+                    foreach (var person in people)
+                    {
+                        person.KnownForTitles = SelectTitles(conn, person.NConst);
                     }
                 }
             }
@@ -253,7 +260,7 @@ namespace AdoNet.Models
             }
 
             return new List<Title>();
-        } 
+        }
 
         #endregion
     }

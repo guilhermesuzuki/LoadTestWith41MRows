@@ -19,7 +19,7 @@ namespace NHibernate.Models
             if (_sessionFactory == null)
             {
                 _sessionFactory = Fluently.Configure()
-                    .Database(MsSqlConfiguration.MsSql2012.ConnectionString(@"Server=localhost;Database=LoadTest_NHibernate;User Id=loadtest;Password=loadtest;"))
+                    .Database(MsSqlConfiguration.MsSql2012.ConnectionString(@"Server=localhost;Database=LoadTest_NHibernate;User Id=loadtest;Password=loadtest;").ShowSql())
                     .Mappings(c => c.FluentMappings
                         .Add<Mappings.PersonMap>()
                         .Add<Mappings.ProfessionMap>()

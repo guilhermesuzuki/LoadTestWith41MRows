@@ -12,6 +12,8 @@ namespace NHibernate
     {
         static void Main(string[] args)
         {
+            goto update;
+
             #region Loading all rows
             //first: load all rows from the text file into the database table
             var filepath = Path.GetFullPath("Files\\data.tsv");
@@ -70,37 +72,93 @@ namespace NHibernate
             }
             Console.WriteLine("Loading all rows from data.tsv file: finished {0}", DateTime.Now);
             goto readline;
-            #endregion
+        #endregion
 
-            #region Updating all rows
+        #region Updating all rows
+        update:
             //second: updates all rows
             Console.WriteLine("Updating all rows from the People table: started {0}", DateTime.Now);
             {
-                var people = LoadTestContext.GetSessionFactory().OpenSession().Query<Person>().ToList();
-                foreach (var person in people)
+                var count = LoadTestContext.GetSessionFactory().OpenStatelessSession().Query<Person>().Count();
+                var index = 0;
+                while (index < count)
                 {
-                    using (var session = LoadTestContext.GetSessionFactory().OpenSession())
+                    var people = LoadTestContext.GetSessionFactory()
+                        .OpenStatelessSession()
+                        .Query<Person>()
+                        .Skip(index)
+                        .Take(1000000)
+                        .ToList();
+
+                    foreach (var person in people)
                     {
-                        person.ColumnForUpdateTest = new string('0', 50);
-
-                        foreach (var title in person.KnownForTitles)
+                        using (var session = LoadTestContext.GetSessionFactory().OpenSession())
                         {
-                            title.ColumnForUpdateTest = new string('1', 50);
-                            session.SaveOrUpdate(title);
+                            person.ColumnForUpdateTest = new string('0', 50);
+                            session.Update(person);
+                            session.Flush();
+                            session.Close();
                         }
-
-                        foreach (var profession in person.PrimaryProfession)
-                        {
-                            profession.ColumnForUpdateTest = new string('2', 50);
-                            session.SaveOrUpdate(profession);
-                        }
-
-                        session.SaveOrUpdate(person);
                     }
+
+                    index += 1000000;
+                }
+
+                count = LoadTestContext.GetSessionFactory().OpenStatelessSession().Query<Profession>().Count();
+                index = 0;
+                while (index < count)
+                {
+                    var professions = LoadTestContext.GetSessionFactory()
+                        .OpenStatelessSession()
+                        .Query<Profession>()
+                        .Skip(index)
+                        .Take(1000000)
+                        .ToList();
+
+                    foreach (var profession in professions)
+                    {
+                        using (var session = LoadTestContext.GetSessionFactory().OpenSession())
+                        {
+                            profession.ColumnForUpdateTest = new string('1', 50);
+                            session.Update(profession);
+                            session.Flush();
+                            session.Close();
+                        }
+
+                    }
+
+                    index += 1000000;
+                }
+
+                count = LoadTestContext.GetSessionFactory().OpenStatelessSession().Query<Title>().Count();
+                index = 0;
+                while (index < count)
+                {
+                    var titles = LoadTestContext.GetSessionFactory()
+                        .OpenStatelessSession()
+                        .Query<Title>()
+                        .Skip(index)
+                        .Take(1000000)
+                        .ToList();
+
+                    foreach (var title in titles)
+                    {
+                        using (var session = LoadTestContext.GetSessionFactory().OpenSession())
+                        {
+                            title.ColumnForUpdateTest = new string('2', 50);
+                            session.SaveOrUpdate(title);
+                            session.Flush();
+                            session.Close();
+                        }
+                    }
+
+                    index += 1000000;
                 }
             }
+
             Console.WriteLine("Updating all rows from the People table: finished {0}", DateTime.Now);
             #endregion
+            goto readline;
 
             #region Deleting all rows
             Console.WriteLine("Deleting all rows from the People table: started {0}", DateTime.Now);
