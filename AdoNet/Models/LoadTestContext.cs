@@ -70,7 +70,7 @@ namespace AdoNet.Models
 
         #region Update methods
 
-        public static void UpdatePerson(SqlConnection conn, Person p)
+        public static void UpdatePerson(SqlConnection conn, Person p, bool updateObjects = false)
         {
             if (conn != null)
             {
@@ -82,8 +82,11 @@ namespace AdoNet.Models
                     cmd.ExecuteNonQuery();
                 }
 
-                foreach (var profession in p.PrimaryProfession) UpdateProfession(conn, profession);
-                foreach (var title in p.KnownForTitles) UpdateTitle(conn, title);
+                if (updateObjects)
+                {
+                    foreach (var profession in p.PrimaryProfession) UpdateProfession(conn, profession);
+                    foreach (var title in p.KnownForTitles) UpdateTitle(conn, title);
+                }
             }
         }
 
@@ -165,14 +168,62 @@ namespace AdoNet.Models
 
         #region Select methods
 
-        public static List<Person> SelectPeople(SqlConnection conn)
+        public static int CountPeople(SqlConnection conn)
         {
             if (conn != null)
             {
                 var people = new List<Person>();
                 using (var cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = "SELECT * FROM [dbo].People";
+                    cmd.CommandText = "SELECT COUNT(1) FROM [dbo].People";
+                    return Convert.ToInt32(cmd.ExecuteScalar());
+                }
+            }
+
+            return 0;
+        }
+
+        public static int CountProfessions(SqlConnection conn)
+        {
+            if (conn != null)
+            {
+                var people = new List<Person>();
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = "SELECT COUNT(1) FROM [dbo].Professions";
+                    return Convert.ToInt32(cmd.ExecuteScalar());
+                }
+            }
+
+            return 0;
+        }
+
+        public static int CountTitles(SqlConnection conn)
+        {
+            if (conn != null)
+            {
+                var people = new List<Person>();
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = "SELECT COUNT(1) FROM [dbo].Titles";
+                    return Convert.ToInt32(cmd.ExecuteScalar());
+                }
+            }
+
+            return 0;
+        }
+
+        public static List<Person> SelectPeople(SqlConnection conn, int offset, int fetch, bool loadObjects = false)
+        {
+            if (conn != null)
+            {
+                var people = new List<Person>();
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = "SELECT * FROM [dbo].People ORDER BY NConst OFFSET @p0 ROWS FETCH NEXT @p1 ROWS ONLY";
+                    cmd.Parameters.Add(new SqlParameter("@p0", offset));
+                    cmd.Parameters.Add(new SqlParameter("@p1", fetch));
+
                     using (var reader = cmd.ExecuteReader())
                     {
                         while (reader.Read())
@@ -189,16 +240,21 @@ namespace AdoNet.Models
                         }
                     }
 
-                    foreach (var person in people)
+                    if (loadObjects)
                     {
-                        person.PrimaryProfession = SelectProfessions(conn, person.NConst);
-                    }
+                        foreach (var person in people)
+                        {
+                            person.PrimaryProfession = SelectProfessions(conn, person.NConst);
+                        }
 
-                    foreach (var person in people)
-                    {
-                        person.KnownForTitles = SelectTitles(conn, person.NConst);
+                        foreach (var person in people)
+                        {
+                            person.KnownForTitles = SelectTitles(conn, person.NConst);
+                        }
                     }
                 }
+
+                return people;
             }
 
             return new List<Person>();
@@ -233,6 +289,37 @@ namespace AdoNet.Models
             return new List<Profession>();
         }
 
+        public static List<Profession> SelectProfessions(SqlConnection conn, int offset, int fetch)
+        {
+            if (conn != null)
+            {
+                var professions = new List<Profession>();
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = "SELECT * FROM [dbo].Professions ORDER BY Id OFFSET @p0 ROWS FETCH NEXT @p1 ROWS ONLY";
+                    cmd.Parameters.Add(new SqlParameter { ParameterName = "@p0", Value = offset });
+                    cmd.Parameters.Add(new SqlParameter { ParameterName = "@p1", Value = fetch });
+
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            var profession = new Profession()
+                            {
+                                Id = reader["Id"] != null ? int.Parse(reader["Id"].ToString()) : 0,
+                                NConst = reader["NConst"] != null ? reader["NConst"].ToString() : String.Empty,
+                                Description = reader["Description"] != null ? reader["Description"].ToString() : String.Empty,
+                            };
+                            professions.Add(profession);
+                        }
+                    }
+                }
+                return professions;
+            }
+
+            return new List<Profession>();
+        }
+
         public static List<Title> SelectTitles(SqlConnection conn, string NConst)
         {
             if (conn != null)
@@ -242,6 +329,38 @@ namespace AdoNet.Models
                 {
                     cmd.CommandText = "SELECT * FROM [dbo].Professions WHERE NConst = @NConst";
                     cmd.Parameters.Add(new SqlParameter { ParameterName = "@NConst", Value = NConst });
+
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            var title = new Title()
+                            {
+                                Id = reader["Id"] != null ? int.Parse(reader["Id"].ToString()) : 0,
+                                NConst = reader["NConst"] != null ? reader["NConst"].ToString() : String.Empty,
+                                Description = reader["Description"] != null ? reader["Description"].ToString() : String.Empty,
+                            };
+                            titles.Add(title);
+                        }
+                    }
+                }
+                return titles;
+            }
+
+            return new List<Title>();
+        }
+
+        public static List<Title> SelectTitles(SqlConnection conn, int offset, int fetch)
+        {
+            if (conn != null)
+            {
+                var titles = new List<Title>();
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = "SELECT * FROM [dbo].Titles ORDER BY Id OFFSET @p0 ROWS FETCH NEXT @p1 ROWS ONLY";
+                    cmd.Parameters.Add(new SqlParameter { ParameterName = "@p0", Value = offset });
+                    cmd.Parameters.Add(new SqlParameter { ParameterName = "@p1", Value = fetch });
+
                     using (var reader = cmd.ExecuteReader())
                     {
                         while (reader.Read())

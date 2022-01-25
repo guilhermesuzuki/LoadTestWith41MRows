@@ -73,22 +73,46 @@ Console.WriteLine("Updating all rows from the People, Professions and Titles tab
     {
         conn.Open();
 
-        var people = LoadTestContext.SelectPeople(conn);
-        foreach (var person in people)
+        var count = LoadTestContext.CountPeople(conn);
+        var index = 0;
+        while (index < count)
         {
-            person.ColumnForUpdateTest = new string('0', 50);
-
-            foreach (var title in person.KnownForTitles)
+            var people = LoadTestContext.SelectPeople(conn, index, 1000000);
+            foreach (var person in people)
             {
-                title.ColumnForUpdateTest = new string('1', 50);
+                person.ColumnForUpdateTest = new string('0', 50);
+                LoadTestContext.UpdatePerson(conn, person);
             }
 
-            foreach (var profession in person.PrimaryProfession)
+            index += 1000000;
+        }
+
+        count = LoadTestContext.CountProfessions(conn);
+        index = 0;
+        while (index < count)
+        {
+            var professions = LoadTestContext.SelectProfessions(conn, index, 1000000);
+            foreach (var profession in professions)
             {
-                profession.ColumnForUpdateTest = new string('2', 50);
+                profession.ColumnForUpdateTest = new string('0', 50);
+                LoadTestContext.UpdateProfession(conn, profession);
             }
 
-            LoadTestContext.UpdatePerson(conn, person);
+            index += 1000000;
+        }
+
+        count = LoadTestContext.CountTitles(conn);
+        index = 0;
+        while (index < count)
+        {
+            var titles = LoadTestContext.SelectTitles(conn, index, 1000000);
+            foreach (var title in titles)
+            {
+                title.ColumnForUpdateTest = new string('0', 50);
+                LoadTestContext.UpdateTitle(conn, title);
+            }
+
+            index += 1000000;
         }
 
         conn.Close();
@@ -105,10 +129,46 @@ Console.WriteLine("Deleting all rows from the People, Professions and Titles tab
     {
         conn.Open();
 
-        var people = LoadTestContext.SelectPeople(conn);
-        foreach (var person in people)
+        var count = LoadTestContext.CountPeople(conn);
+        var index = 0;
+        while (index < count)
         {
-            LoadTestContext.DeletePerson(conn, person);
+            var people = LoadTestContext.SelectPeople(conn, index, count);
+            foreach (var person in people)
+            {
+                person.ColumnForUpdateTest = new string('0', 50);
+                LoadTestContext.DeletePerson(conn, person);
+            }
+
+            index += 1000000;
+        }
+
+        count = LoadTestContext.CountProfessions(conn);
+        index = 0;
+        while (index < count)
+        {
+            var professions = LoadTestContext.SelectProfessions(conn, index, count);
+            foreach (var profession in professions)
+            {
+                profession.ColumnForUpdateTest = new string('0', 50);
+                LoadTestContext.DeleteProfession(conn, profession);
+            }
+
+            index += 1000000;
+        }
+
+        count = LoadTestContext.CountTitles(conn);
+        index = 0;
+        while (index < count)
+        {
+            var titles = LoadTestContext.SelectTitles(conn, index, count);
+            foreach (var title in titles)
+            {
+                title.ColumnForUpdateTest = new string('0', 50);
+                LoadTestContext.DeleteTitle(conn, title);
+            }
+
+            index += 1000000;
         }
 
         conn.Close();
