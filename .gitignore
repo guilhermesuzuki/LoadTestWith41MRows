@@ -361,3 +361,7 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/AdoNet/Files/data.tsv
+/EFCore/Files/data.tsv
+/NHibernate/Files/data.tsv
+/LoadTestWith41MRows.bacpac

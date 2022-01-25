@@ -133,39 +133,12 @@ Console.WriteLine("Deleting all rows from the People, Professions and Titles tab
         var index = 0;
         while (index < count)
         {
-            var people = LoadTestContext.SelectPeople(conn, index, count);
+            var people = LoadTestContext.SelectPeople(conn, index, count, true);
             foreach (var person in people)
             {
-                person.ColumnForUpdateTest = new string('0', 50);
+                foreach (var profession in person.PrimaryProfession) LoadTestContext.DeleteProfession(conn, profession);
+                foreach (var title in person.KnownForTitles) LoadTestContext.DeleteTitle(conn, title);
                 LoadTestContext.DeletePerson(conn, person);
-            }
-
-            index += 1000000;
-        }
-
-        count = LoadTestContext.CountProfessions(conn);
-        index = 0;
-        while (index < count)
-        {
-            var professions = LoadTestContext.SelectProfessions(conn, index, count);
-            foreach (var profession in professions)
-            {
-                profession.ColumnForUpdateTest = new string('0', 50);
-                LoadTestContext.DeleteProfession(conn, profession);
-            }
-
-            index += 1000000;
-        }
-
-        count = LoadTestContext.CountTitles(conn);
-        index = 0;
-        while (index < count)
-        {
-            var titles = LoadTestContext.SelectTitles(conn, index, count);
-            foreach (var title in titles)
-            {
-                title.ColumnForUpdateTest = new string('0', 50);
-                LoadTestContext.DeleteTitle(conn, title);
             }
 
             index += 1000000;
