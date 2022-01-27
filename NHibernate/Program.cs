@@ -12,7 +12,7 @@ namespace NHibernate
     {
         static void Main(string[] args)
         {
-            goto update;
+            goto delete;
 
             #region Loading all rows
             //first: load all rows from the text file into the database table
@@ -160,20 +160,81 @@ namespace NHibernate
             #endregion
             goto readline;
 
-            #region Deleting all rows
+        #region Deleting all rows
+        delete:
             Console.WriteLine("Deleting all rows from the People table: started {0}", DateTime.Now);
             {
-                var people = LoadTestContext.GetSessionFactory().OpenSession().Query<Person>().ToList();
-                foreach (var person in people)
+                var count = LoadTestContext.GetSessionFactory().OpenStatelessSession().Query<Profession>().Count();
+                var index = 0;
+                while (index < count)
                 {
-                    using (var session = LoadTestContext.GetSessionFactory().OpenSession())
+                    var professions = LoadTestContext.GetSessionFactory()
+                        .OpenStatelessSession()
+                        .Query<Profession>()
+                        .Skip(0)
+                        .Take(1000000)
+                        .ToList();
+
+                    foreach (var profession in professions)
                     {
-                        foreach (var title in person.KnownForTitles) session.Delete(title);
-                        foreach (var profession in person.PrimaryProfession) session.Delete(profession);
-                        session.Delete(person);
+                        using (var session = LoadTestContext.GetSessionFactory().OpenSession())
+                        {
+                            session.Delete(profession);
+                            session.Flush();
+                            session.Close();
+                        }
                     }
+
+                    index += 1000000;
                 }
 
+                count = LoadTestContext.GetSessionFactory().OpenStatelessSession().Query<Title>().Count();
+                index = 0;
+                while (index < count)
+                {
+                    var titles = LoadTestContext.GetSessionFactory()
+                        .OpenStatelessSession()
+                        .Query<Title>()
+                        .Skip(0)
+                        .Take(1000000)
+                        .ToList();
+
+                    foreach (var title in titles)
+                    {
+                        using (var session = LoadTestContext.GetSessionFactory().OpenSession())
+                        {
+                            session.Delete(title);
+                            session.Flush();
+                            session.Close();
+                        }
+                    }
+
+                    index += 1000000;
+                }
+
+                count = LoadTestContext.GetSessionFactory().OpenStatelessSession().Query<Person>().Count();
+                index = 0;
+                while (index < count)
+                {
+                    var people = LoadTestContext.GetSessionFactory()
+                        .OpenStatelessSession()
+                        .Query<Person>()
+                        .Skip(0)
+                        .Take(500000)
+                        .ToList();
+
+                    foreach (var person in people)
+                    {
+                        using (var session = LoadTestContext.GetSessionFactory().OpenSession())
+                        {
+                            session.Delete(person);
+                            session.Flush();
+                            session.Close();
+                        }
+                    }
+
+                    index += 500000;
+                }
             }
             Console.WriteLine("Deleting all rows from the People table: finished {0}", DateTime.Now);
         #endregion

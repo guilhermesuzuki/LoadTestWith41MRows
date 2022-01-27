@@ -20,8 +20,8 @@ namespace NHibernate.Mappings
             Map(x => x.BirthYear).Nullable();
             Map(x => x.DeathYear).Nullable();
             Map(x => x.ColumnForUpdateTest).Nullable();
-            HasMany(x => x.PrimaryProfession).Cascade.All().LazyLoad().KeyColumn("NConst");
-            HasMany(x => x.KnownForTitles).Cascade.All().LazyLoad().KeyColumn("NConst");
+            HasMany(x => x.PrimaryProfession).Cascade.SaveUpdate().LazyLoad().KeyColumn("NConst");
+            HasMany(x => x.KnownForTitles).Cascade.SaveUpdate().LazyLoad().KeyColumn("NConst");
             Table("People");
         }
     }

@@ -1,10 +1,11 @@
-﻿#region Loading all rows
-//first: load all rows from the text file into the database table
-using AdoNet.Models;
+﻿using AdoNet.Models;
 using System.Data.SqlClient;
 
+goto delete;
+
+#region Loading all rows
+//first: load all rows from the text file into the database table
 var filepath = Path.GetFullPath("Files\\data.tsv");
-goto update;
 Console.WriteLine("Loading all rows from data.tsv file: started {0}", DateTime.Now);
 using (var stream = new StreamReader(filepath))
 {
@@ -123,21 +124,46 @@ Console.WriteLine("Updating all rows from the People, Professions and Titles tab
 goto readline;
 
 #region Deleting all rows
+delete:
 Console.WriteLine("Deleting all rows from the People, Professions and Titles tables: started {0}", DateTime.Now);
 {
     using (var conn = new SqlConnection(LoadTestContext.ConnectionString))
     {
         conn.Open();
 
-        var count = LoadTestContext.CountPeople(conn);
+        var count = LoadTestContext.CountProfessions(conn);
         var index = 0;
         while (index < count)
         {
-            var people = LoadTestContext.SelectPeople(conn, index, count, true);
+            var professions = LoadTestContext.SelectProfessions(conn, 0, 1000000);
+            foreach (var profession in professions)
+            {
+                LoadTestContext.DeleteProfession(conn, profession);
+            }
+
+            index += 1000000;
+        }
+
+        count = LoadTestContext.CountTitles(conn);
+        index = 0;
+        while (index < count)
+        {
+            var titles = LoadTestContext.SelectTitles(conn, 0, 1000000);
+            foreach (var title in titles)
+            {
+                LoadTestContext.DeleteTitle(conn, title);
+            }
+
+            index += 1000000;
+        }
+
+        count = LoadTestContext.CountPeople(conn);
+        index = 0;
+        while (index < count)
+        {
+            var people = LoadTestContext.SelectPeople(conn, 0, 1000000, false);
             foreach (var person in people)
             {
-                foreach (var profession in person.PrimaryProfession) LoadTestContext.DeleteProfession(conn, profession);
-                foreach (var title in person.KnownForTitles) LoadTestContext.DeleteTitle(conn, title);
                 LoadTestContext.DeletePerson(conn, person);
             }
 
