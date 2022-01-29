@@ -25,11 +25,13 @@ namespace EFCore.Models
             modelBuilder.Entity<Person>()
                 .HasMany(x => x.KnownForTitles)
                 .WithOne()
+                .OnDelete(DeleteBehavior.NoAction)
                 .HasForeignKey(x => x.NConst);
 
             modelBuilder.Entity<Person>()
                 .HasMany(x => x.PrimaryProfession)
                 .WithOne()
+                .OnDelete(DeleteBehavior.NoAction)
                 .HasForeignKey(x => x.NConst);
 
             base.OnModelCreating(modelBuilder);
