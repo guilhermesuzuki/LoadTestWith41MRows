@@ -2,8 +2,6 @@
 using EFCore.Models;
 using Microsoft.EntityFrameworkCore;
 
-goto update;
-
 #region Loading all rows
 //first: load all rows from the text file into the database table
 var filepath = Path.GetFullPath("Files\\data.tsv");
@@ -109,9 +107,9 @@ Console.WriteLine("Updating all rows from the People, Professions and Titles tab
 }
 Console.WriteLine("Updating all rows from the People, Professions and Titles tables: finished {0}", DateTime.Now);
 #endregion
-goto readline;
 
 #region Deleting all rows
+delete:
 Console.WriteLine("Deleting all rows from the People, Professions and Titles tables: started {0}", DateTime.Now);
 {
     var count = new LoadTestContext().People.Count();
@@ -122,7 +120,6 @@ Console.WriteLine("Deleting all rows from the People, Professions and Titles tab
         var people = new LoadTestContext().People
             .Include(x => x.PrimaryProfession)
             .Include(x => x.KnownForTitles)
-            .Skip(index)
             .Take(1000000)
             .ToList();
 

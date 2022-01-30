@@ -12,8 +12,6 @@ namespace NHibernate
     {
         static void Main(string[] args)
         {
-            goto delete;
-
             #region Loading all rows
             //first: load all rows from the text file into the database table
             var filepath = Path.GetFullPath("Files\\data.tsv");
@@ -91,7 +89,6 @@ namespace NHibernate
                 }
             }
             Console.WriteLine("Loading all rows from data.tsv file: finished {0}", DateTime.Now);
-            goto readline;
         #endregion
 
         #region Updating all rows
@@ -178,7 +175,6 @@ namespace NHibernate
 
             Console.WriteLine("Updating all rows from the People table: finished {0}", DateTime.Now);
             #endregion
-            goto readline;
 
         #region Deleting all rows
         delete:

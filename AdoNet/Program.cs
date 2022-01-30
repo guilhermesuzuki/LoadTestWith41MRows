@@ -1,8 +1,6 @@
 ﻿using AdoNet.Models;
 using System.Data.SqlClient;
 
-goto delete;
-
 #region Loading all rows
 //first: load all rows from the text file into the database table
 var filepath = Path.GetFullPath("Files\\data.tsv");
@@ -62,7 +60,6 @@ using (var stream = new StreamReader(filepath))
     }
 }
 Console.WriteLine("Loading all rows from data.tsv file: finished {0}", DateTime.Now);
-goto readline;
 #endregion
 
 #region Updating all rows
@@ -121,7 +118,6 @@ Console.WriteLine("Updating all rows from the People, Professions and Titles tab
 }
 Console.WriteLine("Updating all rows from the People, Professions and Titles tables: finished {0}", DateTime.Now);
 #endregion
-goto readline;
 
 #region Deleting all rows
 delete:
