@@ -67,6 +67,26 @@ namespace NHibernate
                             session.Flush();
                             session.Close();
                         }
+
+                        foreach (var profession in person.PrimaryProfession)
+                        {
+                            using (var session = LoadTestContext.GetSessionFactory().OpenSession())
+                            {
+                                session.Save(profession);
+                                session.Flush();
+                                session.Close();
+                            }
+                        }
+
+                        foreach (var title in person.KnownForTitles)
+                        {
+                            using (var session = LoadTestContext.GetSessionFactory().OpenSession())
+                            {
+                                session.Save(title);
+                                session.Flush();
+                                session.Close();
+                            }
+                        }
                     }
                 }
             }
