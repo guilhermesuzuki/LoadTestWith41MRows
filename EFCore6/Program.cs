@@ -1,5 +1,5 @@
 ﻿// See https://aka.ms/new-console-template for more information
-using EFCore.Models;
+using EFCore6.Models;
 using Microsoft.EntityFrameworkCore;
 
 #region Loading all rows

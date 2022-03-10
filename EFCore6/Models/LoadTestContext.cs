@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EFCore.Models
+namespace EFCore6.Models
 {
     public class LoadTestContext: DbContext
     {
@@ -16,7 +16,7 @@ namespace EFCore.Models
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
-            options.UseSqlServer("Server=localhost;Database=LoadTest_EFCore;User Id=loadtest;Password=loadtest;");
+            options.UseSqlServer("Server=localhost;Database=LoadTest_EFCore6;User Id=loadtest;Password=loadtest;");
             base.OnConfiguring(options);
         }
 

@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EFCore.Models
+namespace EFCore6.Models
 {
     [Table("Professions")]
     public class Profession
