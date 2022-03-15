@@ -366,3 +366,4 @@ FodyWeavers.xsd
 /NHibernate/Files/data.tsv
 /LoadTestWith41MRows.bacpac
 /EFCore7/Files/data.tsv
+/EFCore6/Files/data.tsv
