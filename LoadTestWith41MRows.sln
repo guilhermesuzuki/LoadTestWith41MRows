@@ -7,9 +7,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate", "NHibernate\NH
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdoNet", "AdoNet\AdoNet.csproj", "{46012BCD-0D1A-4A15-ACE4-6E1928184489}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EFCore7", "EFCore7\EFCore7.csproj", "{BDF99A4B-0A1B-461A-81AE-B54EDC6376EF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EFCore7", "EFCore7\EFCore7.csproj", "{BDF99A4B-0A1B-461A-81AE-B54EDC6376EF}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EFCore6", "EFCore6\EFCore6.csproj", "{9E3545B4-8574-4EED-B783-D65BE28828B4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EFCore6_MySQL", "EFCore6_MySQL\EFCore6_MySQL.csproj", "{E113D957-2547-4017-984E-BBD68167FA22}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{9E3545B4-8574-4EED-B783-D65BE28828B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9E3545B4-8574-4EED-B783-D65BE28828B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9E3545B4-8574-4EED-B783-D65BE28828B4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E113D957-2547-4017-984E-BBD68167FA22}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E113D957-2547-4017-984E-BBD68167FA22}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E113D957-2547-4017-984E-BBD68167FA22}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E113D957-2547-4017-984E-BBD68167FA22}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -367,3 +367,4 @@ FodyWeavers.xsd
 /LoadTestWith41MRows.bacpac
 /EFCore7/Files/data.tsv
 /EFCore6/Files/data.tsv
+/EFCore6_MySQL/Files/data.tsv
