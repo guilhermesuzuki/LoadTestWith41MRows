@@ -1,8 +1,12 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using EFCore6.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
+
+var stopWatch = new Stopwatch();
 
 #region Loading all rows
+stopWatch.Start();
 //first: load all rows from the text file into the database table
 var filepath = Path.GetFullPath("Files\\data.tsv");
 Console.WriteLine("Loading all rows from data.tsv file: started {0}", DateTime.Now);
@@ -56,9 +60,12 @@ using (var stream = new StreamReader(filepath))
     }
 }
 Console.WriteLine("Loading all rows from data.tsv file: finished {0}", DateTime.Now);
+stopWatch.Stop();
+Console.WriteLine("Loading all rows from data.tsv file: time elapset {0}", stopWatch.Elapsed.ToString(@"hh\:mm\:ss"));
 #endregion
 
 #region Updating all rows
+stopWatch.Restart();
 update:
 //second: updates all rows
 Console.WriteLine("Updating all rows from the People, Professions and Titles tables: started {0}", DateTime.Now);
@@ -106,9 +113,12 @@ Console.WriteLine("Updating all rows from the People, Professions and Titles tab
     }
 }
 Console.WriteLine("Updating all rows from the People, Professions and Titles tables: finished {0}", DateTime.Now);
+stopWatch.Stop();
+Console.WriteLine("Updating all rows from the People, Professions and Titles tables: time elapsed {0}", stopWatch.Elapsed.ToString(@"hh\:mm\:ss"));
 #endregion
 
 #region Deleting all rows
+stopWatch.Restart();
 delete:
 Console.WriteLine("Deleting all rows from the People, Professions and Titles tables: started {0}", DateTime.Now);
 {
@@ -138,6 +148,8 @@ Console.WriteLine("Deleting all rows from the People, Professions and Titles tab
     }
 }
 Console.WriteLine("Deleting all rows from the People, Professions and Titles tables: finished {0}", DateTime.Now);
+stopWatch.Stop();
+Console.WriteLine("Deleting all rows from the People, Professions and Titles tables: time elapsed {0}", stopWatch.Elapsed.ToString(@"hh\:mm\:ss"));
 #endregion
 
 readline:
