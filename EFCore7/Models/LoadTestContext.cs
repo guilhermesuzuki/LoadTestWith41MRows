@@ -16,7 +16,7 @@ namespace EFCore7.Models
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
-            options.UseSqlServer("Server=localhost;Database=LoadTest_EFCore7;User Id=loadtest;Password=loadtest;");
+            options.UseSqlServer("Server=localhost;Database=LoadTest_EFCore7;User Id=loadtest;Password=loadtest;TrustServerCertificate=True;");
             base.OnConfiguring(options);
         }
 
